@@ -24,8 +24,8 @@
 			);
 
 			// If we're editing, make sure the item exists
-			if ($this->page->_context[0]) {
-				if (!$doc_id = $this->page->_context[0]) redirect(URL . '/symphony/extension/documenter/manage');
+			if ($this->page->getContext()[0]) {
+				if (!$doc_id = $this->page->getContext()[0]) redirect(URL . '/symphony/extension/documenter/manage/');
 
 				$existing = Symphony::Database()
 					->select(['d.*'])
@@ -36,19 +36,17 @@
 					->next();
 
 				if (!$existing) {
-					$this->page->_Parent->customError(
-						E_USER_ERROR, __('Documentation Item not found'),
+					Administration::instance()->throwCustomError(
 						__('The documentation item you requested to edit does not exist.'),
-						false, true, 'error', array(
-							'header'	=> 'HTTP/1.0 404 Not Found'
-						)
+						__('Documentation Item not found'),
+						Page::HTTP_STATUS_NOT_FOUND
 					);
 				}
 			}
 
 			// Build the status message
-			if (isset($this->page->_context[1])) {
-				if ($this->page->_context[1] == 'saved') {
+			if (isset($this->page->getContext()[1])) {
+				if ($this->page->getContext()[1] == 'saved') {
 					$this->page->pageAlert(
 						__('Documentation Item updated at %1$s. <a href="%2$s">Create another?</a> <a href="%3$s">View all Documentation</a>',
 						array(Widget::Time()->generate(__SYM_TIME_FORMAT__),
@@ -73,7 +71,7 @@
 			if (isset($_POST['fields'])) {
 				$fields = $_POST['fields'];
 
-			} else if ($this->page->_context[0]) {
+			} else if ($this->page->getContext()[0]) {
 				$fields = $existing;
 				$fields['content'] = General::sanitize($fields['content']);
 			}
@@ -194,32 +192,17 @@
 			$div = new XMLElement('div');
 			$div->setAttribute('class', 'actions');
 
-			$div->appendChild(
-				Widget::SVGIconContainer(
-					'save',
-					Widget::Input(
-						'action[save]',
-						($this->page->_context[0] ? __('Save Changes') : __('Document It')),
-						'submit',
-						array('accesskey' => 's')
-					)
-				)
-			);
-
-			if($this->page->_context[0]){
-				$button = new XMLElement('button', __('Delete'));
+			if($this->page->getContext()[0]){
+				$button = new XMLElement('button', Widget::SVGIcon('delete'));
 				$button->setAttributeArray(array('name' => 'action[delete]', 'class' => 'confirm delete', 'title' => __('Delete this template')));
-				$div->appendChild(
-					Widget::SVGIconContainer(
-						'delete',
-						$button
-					)
-				);
+				$div->appendChild($button);
 			}
 
-			$div->appendChild(Widget::SVGIcon('chevron'));
+			$saveBtn = new XMLElement('button', Widget::SVGIcon('save'));
+			$saveBtn->setAttributeArray(array('name' => 'action[save]', 'class' => 'button', 'title' => __('Save this entry'), 'type' => 'submit', 'accesskey' => 's'));
+			$div->appendChild($saveBtn);
 
-			$this->page->Form->appendChild($div);
+			$this->page->ContentsActions->appendChild($div);
 		}
 
 		function applyFormatting($data, $validate = false, &$errors = null){

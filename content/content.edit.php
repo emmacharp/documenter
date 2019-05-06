@@ -9,6 +9,7 @@
 
 		public function __construct() {
 			parent::__construct();
+
 			$this->form = new DocumentationForm($this);
 		}
 
@@ -17,7 +18,8 @@
 		}
 
 		public function action() {
-			$doc_id = $this->_context[0];
+
+			$doc_id = $this->getContext()[0];
 
 			// Delete action
 			if (@array_key_exists('delete', $_POST['action'])) {
