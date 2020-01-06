@@ -91,10 +91,7 @@
 			$this->page->appendSubheading(($title ? $title : __('Untitled')));
 
 			// Start building the fieldsets
-			$this->page->Form->setAttribute('class', 'two columns');
-
 			$fieldset = new XMLElement('fieldset');
-			$fieldset->setAttribute('class', 'primary column');
 
 			// Title text input
 			$label = Widget::Label(__('Title'));
@@ -125,11 +122,12 @@
 				));
 			}
 
-			$this->page->Form->appendChild($fieldset);
+			$this->page->Primary->appendChild($fieldset);
 
 			// Pages multi-select
 			$fieldset = new XMLElement('fieldset');
-			$fieldset->setAttribute('class', 'secondary column');
+			$secondary = new XMLElement('section');
+			$secondary->setAttribute('id', 'secondary');
 			$label = Widget::Label(__('Pages'));
 
 			if (!is_array($fields['pages'])) {
@@ -184,7 +182,8 @@
 			}
 
 			$fieldset->appendChild($label);
-			$this->page->Form->appendChild($fieldset);
+			$secondary->appendChild($fieldset);
+			$this->page->Form->appendChild($secondary);
 
 			// Form actions
 			Administration::instance()->Page->Header->setAttribute('class', 'spaced-bottom');
