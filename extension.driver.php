@@ -64,8 +64,8 @@
 		}
 
 		public function loadAssets($context) {
-			Administration::instance()->Page->addStylesheetToHead(URL . '/extensions/documenter/assets/documenter.admin.css', 'screen', 100);
-			Administration::instance()->Page->addScriptToHead(URL . '/extensions/documenter/assets/documenter.admin.js', 101, false);
+			Administration::instance()->Page->addStylesheetToBody(URL . '/extensions/documenter/assets/documenter.admin.css', 'screen', 100);
+			Administration::instance()->Page->addScriptToBody(URL . '/extensions/documenter/assets/documenter.admin.js', 101, false);
 		}
 
 		public function appendDocs($context) {
@@ -238,9 +238,6 @@
 			$group->setAttribute('class', 'settings');
 			$group->appendChild(new XMLElement('legend', __('Documentation')));
 
-			$div = new XMLElement('div');
-			$div->setAttribute('class', 'group');
-
 		// Input for button text
 			$label = Widget::Label(__('Button Text'));
 			$input = Widget::Input(
@@ -250,7 +247,7 @@
 			);
 
 			$label->appendChild($input);
-			$div->appendChild($label);
+			$group->appendChild($label);
 
 			$formatters = TextformatterManager::listAll();
 
@@ -273,9 +270,8 @@
 			$input = Widget::Select('settings[documentation][text-formatter]', $options);
 
 			$label->appendChild($input);
-			$div->appendChild($label);
+			$group->appendChild($label);
 
-			$group->appendChild($div);
 			$context['wrapper']->appendChild($group);
 		}
 
