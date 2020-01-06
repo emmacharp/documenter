@@ -75,8 +75,9 @@
 			);
 			$table->setAttribute('class','selectable');
 			$table->setAttribute('data-interactive', 'data-interactive');
+			$table->setAttribute('role', 'directory');
 
-			$this->Form->appendChild($table);
+			$this->Primary->appendChild($table);
 
 			$actions = new XMLElement('div');
 			$actions->setAttribute('class', 'actions');
@@ -88,7 +89,7 @@
 
 			$actions->appendChild(Widget::Apply($options));
 
-			$this->Form->appendChild($actions);
+			$this->Primary->appendChild($actions);
 
 		}
 
